@@ -124,7 +124,7 @@ func processFile(filePath string, inPlace bool, ignorePattern string) error {
 	formatted := formatContent(input)
 
 	if inPlace {
-		err = os.WriteFile(filePath, formatted, 0o644)
+		err = os.WriteFile(filePath, formatted, 0o600)
 		if err != nil {
 			return fmt.Errorf("error writing to file %s: %v", filePath, err)
 		}
