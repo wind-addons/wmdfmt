@@ -1,4 +1,4 @@
-module wmdfmt
+module github.com/wind-addons/wmdfmt
 
 go 1.22
 
