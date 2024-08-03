@@ -1,4 +1,4 @@
-module mdfmt
+module wmdfmt
 
 go 1.22
 

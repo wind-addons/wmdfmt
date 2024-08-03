@@ -1,4 +1,4 @@
-# mdfmt
+# wmdfmt
 
 This is a simple markdown formatter that will format markdown files with [lute](https://github.com/88250/lute).
 
@@ -16,7 +16,7 @@ This is a simple markdown formatter that will format markdown files with [lute](
 ## 🚚 Installation
 
 ```bash
-go install github.com/wind-addons/mdfmt@latest
+go install github.com/wind-addons/wmdfmt@latest
 ```
 
 ## 💡 Usage
@@ -25,10 +25,10 @@ go install github.com/wind-addons/mdfmt@latest
 
 ```text
 NAME:
-   mdfmt - Format Markdown files
+   wmdfmt - Format Markdown files
 
 USAGE:
-   mdfmt [global options] command [command options]
+   wmdfmt [global options] command [command options]
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
@@ -44,25 +44,25 @@ GLOBAL OPTIONS:
 
 ```bash
 # Format a single file
-mdfmt README.md
+wmdfmt README.md
 
 # Format from pipe
-echo "# Hello" | mdfmt
+echo "# Hello" | wmdfmt
 
 # Format multiple files
-mdfmt README.md CHANGELOG.md
+wmdfmt README.md CHANGELOG.md
 
 # Format all markdown files in a directory
-mdfmt .
+wmdfmt .
 
 # Format all markdown files in a directory and subdirectories
-mdfmt -r .
+wmdfmt -r .
 
 # Format all markdown files in a directory and subdirectories in-place
-mdfmt -r -i .
+wmdfmt -r -i .
 
 # Format all markdown files in a directory and subdirectories in-place and ignore CHANGELOG.md
-mdfmt -r -i --ignore CHANGELOG.md .
+wmdfmt -r -i --ignore CHANGELOG.md .
 ```
 
 ## 📜 License

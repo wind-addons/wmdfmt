@@ -13,7 +13,7 @@ import (
 
 func main() {
 	app := &cli.App{
-		Name:  "mdfmt",
+		Name:  "wmdfmt",
 		Usage: "Format Markdown files",
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
