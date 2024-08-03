@@ -1,0 +1,46 @@
+run:
+  concurrency: 4
+  timeout: 5m
+issues:
+  exclude-dirs:
+    - .github
+    - .git
+linters:
+  enable:
+    - asasalint
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - cyclop
+    - decorder
+    - dupl
+    - errname
+    - funlen
+    - ginkgolinter
+    - goconst
+    - gocritic
+    - gofumpt
+    - goimports
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - lll
+    - nestif
+    - noctx
+    - predeclared
+    - revive
+    - staticcheck
+    - unconvert
+    - unparam
+    - whitespace
+linters-settings:
+  cyclop:
+    max-complexity: 30
+    skip-tests: true
+  funlen:
+    lines: 100
+    statements: 50
+    ignore-comments: true
+  goconst:
+    ignore-tests: true
