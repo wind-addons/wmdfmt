@@ -1,0 +1,23 @@
+name: 📢 Release Notify
+on:
+  release:
+    types: [published]
+jobs:
+  notify:
+    name: 📢 Notify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout to actions repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          repository: wind-addons/actions
+          ref: main
+      - name: Send message to Discord
+        env:
+          RELEASE_EVENT_JSON: ${{ toJson(github.event.release) }}
+          REPOSITORY_NAME: ${{ github.repository }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_ALL_RELEASE }}
+          BAR_IMAGE: ${{ vars.DISCORD_MESSAGE_BAR_IMAGE }}
+          ROCKET_IMAGE: ${{ vars.DISCORD_MESSAGE_ROCKET_IMAGE }}
+        run: node discord/release-message.js
