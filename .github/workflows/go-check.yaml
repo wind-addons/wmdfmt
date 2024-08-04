@@ -1,0 +1,29 @@
+name: 🐭 Go
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  check:
+    name: 🧐 Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Get dependencies
+        run: go get -v ./...
+      - name: Build
+        run: go build -v ./...
+      - name: Test
+        run: go test -v ./...
+      - name: Lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.59

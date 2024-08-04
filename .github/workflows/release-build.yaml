@@ -1,0 +1,89 @@
+name: 🏗️ Release Build
+on:
+  release:
+    types: [published]
+env:
+  CARGO_TERM_COLOR: always
+jobs:
+  check:
+    name: 🧐 Pre-build check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Get dependencies
+        run: go get -v ./...
+      - name: Build
+        run: go build -v ./...
+      - name: Test
+        run: go test -v ./...
+      - name: Lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.59
+  build:
+    name: 🏗️ Build ${{ matrix.os }}/${{ matrix.arch }}
+    runs-on: ubuntu-latest
+    needs: check
+    env:
+      SOURCE_DIR: .
+      APP_NAME: ${{ github.event.repository.name }}
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        include:
+          - os: linux
+            arch: amd64
+          - os: linux
+            arch: arm
+          - os: linux
+            arch: arm64
+          - os: darwin
+            arch: amd64
+          - os: darwin
+            arch: arm64
+          - os: windows
+            arch: amd64
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Build
+        env:
+          GOOS: ${{ matrix.os }}
+          GOARCH: ${{ matrix.arch }}
+        run: |
+          EXTENSION="${{ matrix.os == 'windows' && '.exe' || '' }}"
+          BINARY_NAME="${APP_NAME}_${{ github.event.release.tag_name }}_${{ matrix.os }}-${{ matrix.arch }}"
+          echo "BINARY_NAME=$BINARY_NAME" >> $GITHUB_ENV
+          go build -ldflags="-s -w" -v -o "dist/${BINARY_NAME}${EXTENSION}" $SOURCE_DIR
+      - name: Archive
+        run: |
+          if [ "${{ matrix.os }}" = "windows" ]; then
+            cd dist && zip -r "${BINARY_NAME}.zip" "${BINARY_NAME}.exe"
+            echo "OUTPUT_FILE=${BINARY_NAME}.zip" >> $GITHUB_ENV
+          elif [ "${{ matrix.os }}" = "linux" ]; then
+            tar -czf "dist/${BINARY_NAME}.tar.gz" -C dist "${BINARY_NAME}"
+            echo "OUTPUT_FILE=${BINARY_NAME}.tar.gz" >> $GITHUB_ENV
+          else
+            zip -j "dist/${BINARY_NAME}.zip" "dist/${BINARY_NAME}"
+            echo "OUTPUT_FILE=${BINARY_NAME}.zip" >> $GITHUB_ENV
+          fi
+      - name: Upload to release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          sha256sum "dist/${OUTPUT_FILE}" > "dist/${OUTPUT_FILE}.sha256"
+          gh release upload ${{ github.ref_name }} "dist/${OUTPUT_FILE}" "dist/${OUTPUT_FILE}.sha256"
