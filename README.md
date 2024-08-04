@@ -1,4 +1,4 @@
-# wmdfmt
+# 🧹 wmdfmt
 
 This is a simple markdown formatter that will format markdown files with [lute](https://github.com/88250/lute).
 
